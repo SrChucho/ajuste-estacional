@@ -54,17 +54,37 @@ igae_trend <- series(modelo_inegi,"d12")
 igae_irr <- series(modelo_inegi,"d13")
 igae_seas <- series(modelo_inegi,"d10")
 
-par(mfrow = c(2,2))
+# original series adjusted for regARIMA calendar effects
+igae_a18 <- series(modelo_inegi, "a18")
+
+# combined holiday and trading day factors
+igae_d18 <- series(modelo_inegi, "d18") 
+# combined seasonal and trading day factors
+igae_d16 <- series(modelo_inegi, "d16")
+
+# regARIMA holiday factors (table A7)
+igae_hol <- series(modelo_inegi, "hol")
+# combined holiday prior adjustment factors, A16 table
+igae_chl <- series(modelo_inegi, "chl")
+
+
+par(mfrow = c(3,2), mai = c(0.3,.4,.5,.3))
 ts.plot(cbind(igae, igae_sa), col = c(4,2), 
-        main = "IGAE")
-ts.plot(igae_trend, main = "Componente Tendencia-Ciclo")
-ts.plot(igae_seas, main = "Componente Estacional")
-ts.plot(igae_irr, main = "Componente Irregular")
+        main = "IGAE", xlab = "", ylab = "")
+ts.plot(igae_trend, main = "Componente Tendencia-Ciclo",
+        xlab = "", ylab = "")
+ts.plot(igae_seas, main = "Componente Estacional",
+        xlab = "", ylab = "")
+ts.plot(igae_irr, main = "Componente Irregular",
+        xlab = "", ylab = "")
+ts.plot(igae_d18, main = "Componente Ajustes Previos",
+        xlab = "", ylab = "")
 
 # export
 igae_df <- data.frame(Period = dates, IGAE = igae, IGAE_SA = igae_sa,
                  Tendencia = igae_trend, FE = igae_seas,
-                 Irregular = igae_irr)
+                 Irregular = igae_irr, 
+                 Calendar = igae_d18)
 
 write.csv(igae_df, paste(path, "igae_ae.csv", sep = ""), 
           row.names = FALSE)
@@ -78,18 +98,38 @@ bym_trend <- series(bym_model, "s12")
 bym_irr <- series(bym_model, "s13")
 bym_seas <- series(bym_model, "s10")
 
+# original series adjusted for regARIMA calendar effects
+bym_a18 <- series(bym_model, "a18")
 
-par(mfrow = c(2,2))
+# combined holiday and trading day factors
+bym_s18 <- series(bym_model, "s18") 
+# combined seasonal and trading day factors
+bym_s16 <- series(bym_model, "s16")
+
+# regARIMA holiday factors (table A7)
+bym_hol <- series(bym_model, "hol")
+
+bym_trn <- series(bym_model, "trn")
+
+
+par(mfrow = c(3,2), mai = c(0.3,.4,.5,.3))
 ts.plot(cbind(bym, bym_sa), col = c(4,2), 
-        main = "Billetes y Monedas en circulación")
-ts.plot(bym_trend, main = "Componente Tendencia-Ciclo")
-ts.plot(bym_seas, main = "Componente Estacional")
-ts.plot(bym_irr, main = "Componente Irregular")
+        main = "Billetes y Monedas en circulación",
+        xlab = "", ylab = "")
+ts.plot(bym_trend, main = "Componente Tendencia-Ciclo",
+        xlab = "", ylab = "")
+ts.plot(bym_seas, main = "Componente Estacional",
+        xlab = "", ylab = "")
+ts.plot(bym_irr, main = "Componente Irregular",
+        xlab = "", ylab = "")
+ts.plot(bym_s18, main = "Componente Ajustes Previos",
+        xlab = "", ylab = "")
 
 # export
 bym_df <- data.frame(Period = dates, ByM = bym, ByM_SA = bym_sa,
                       Tendencia = bym_trend, FE = bym_seas,
-                      Irregular = bym_irr)
+                      Irregular = bym_irr,
+                      Calendar = bym_s18)
 
 write.csv(bym_df, paste(path, "bym_ae.csv", sep = ""), 
           row.names = FALSE)
